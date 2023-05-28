@@ -1,0 +1,160 @@
+Users:
+  post:
+    summary: Account registration
+    description: Once registration is completed, the email will be sent to user immediately for user verification
+    tags: 
+      - Auth
+    requestBody:
+      required: true
+      content: 
+        application/json:
+          schema:
+            type: object
+            properties:
+              username:
+                type: string
+                minLength: 3
+                maxLength: 15
+                description: Users can not use the existing username. Username can contains alphabets or number, and at least has a alphabet
+              password:
+                type: string
+                minLength: 6
+                maxLength: 256
+                description: Password can contains anything, there is no rules
+              email:
+                type: string
+                maxLength: 320
+                description: Must be an valid email
+            required:
+              - username
+              - password
+              - email
+          example:
+            username: john99
+            password: 123456
+            email: john@testmail.com
+    responses:
+      '201':
+        description: Account is successfully registered
+      '400x1':
+        description: Error username is already taken
+        content: 
+          application/json:
+            schema:
+              type: object
+              properties:
+                keyword: 
+                  type: string
+                  example: USER_NAME_TAKEN
+      '400x2':
+        description: Error email is already taken
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                keyword: 
+                  type: string
+                  example: USER_EMAIL_TAKEN
+      '400x3':
+        description: Validation errors
+        content: 
+          application/json:
+            schema:
+              $ref: './components.yml#/components/responses/ErrorValidation'
+      '500':
+        $ref: './components.yml#/components/responses/Error500'
+ChangePassword:
+  put:
+    summary: change user password
+    description: current password is required to change new password
+    tags:
+      - User
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              currentPassword:
+                type: string
+              newPassword:
+                type: string
+                minLength: 6
+                maxLength: 256
+                description: Password can contains anything, there is no rules
+            required: 
+              - currentPassword
+              - newPassword
+    responses:
+      '204':
+        description: changing password is success
+      '400':
+        $ref: './components.yml#/components/responses/ErrorValidation'
+      '401':
+        $ref: './components.yml#/components/responses/Error401'
+      '500':
+        $ref: './components.yml#/components/responses/Error500'
+ResetPassword:
+  post:
+    summary: reset password by using email
+    tags:
+      - User
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+                summary: a valid email
+            required: 
+              - email
+    responses:
+      '204':
+        description: success
+      '400':
+        $ref: './components.yml#/components/responses/ErrorValidation'
+      '500':
+        $ref: './components.yml#/components/responses/Error500'
+ConfirmResetPassword:
+  post:
+    summary: confirm reset password by token (sent to email)
+    tags: 
+      - User
+    parameters:
+      - in: query
+        name: token
+        schema:
+          type: string
+        description: token that sent to user's email
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              newPassword:
+                type: string
+            required: 
+              - newPassword
+    responses:
+      '204':
+        description: success
+      '400':
+        description: Error can be validation error or token is invalid
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: './components.yml#/components/responses/ErrorValidation'
+                - $ref: './components.yml#/components/responses/ErrorVerificationToken'
+            examples:
+              ErrorValidation:
+                $ref: './components.yml#/components/examples/ErrorValidation'
+              ErrorVerificationToken:
+                $ref: './components.yml#/components/examples/ErrorVerificationToken'

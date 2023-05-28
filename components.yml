@@ -1,0 +1,19 @@
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    ErrorValidation:
+      properties:
+        keyword:
+          type: string
+          example: VALIDATION_ERROR
+    Error500:
+      description: Server Error
+      content:
+        text/plain: 
+          schema:
+            type: string
+            example: Server Error

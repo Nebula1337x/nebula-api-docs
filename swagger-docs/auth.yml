@@ -1,0 +1,195 @@
+Login:
+  post:
+    summary: Login to account
+    tags: 
+      - Auth
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              username:
+                type: string
+              password:
+                type: string
+            required: 
+              - username
+              - password              
+          example:
+            username: john99
+            password: 123456
+    responses:
+      '200':
+        description: Login success
+        content:
+          application/json:
+            schema: 
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    auth:
+                      type: object
+                      properties:
+                        accessToken:
+                          type: string
+                          example: 65794a68624763694f694a49557a49314e694973496e523563434936496b705856434a392e65794a3163325679535751694f6949324e4452695a474e6c4f474e6a4f544931596d49314e6a4a6d596a426c4e5749694c434a3163325679626d46745a534936496d3170626d56684969776961574630496a6f784e6a67794e6a6b7a4d7a55324c434a6c654841694f6a45324f4449324f5451794e545973496d46315a434936496d356c596e56735953356a623230694c434a7063334d694f694a6863476b746333526e4c6d356c596e56735953356a6232306966512e326c4f697263452d3278674b69687767784f7649337076694a754c67735f6178546e3971734242396b554d
+                        refreshToken:
+                          type: string
+                          example: 65794a68624763694f694a49557a49314e694973496e523563434936496b705856434a392e65794a3163325679535751694f6949324e4452695a474e6c4f474e6a4f544931596d49314e6a4a6d596a426c4e5749694c434a3163325679626d46745a534936496d3170626d56684969776961574630496a6f784e6a67794e6a6b7a4d7a55324c434a6c654841694f6a45324f4449334d4441314e545973496d46315a434936496d356c596e56735953356a623230694c434a7063334d694f694a6863476b746333526e4c6d356c596e56735953356a6232306966512e5075587232634c54307049497971364a496b544c2d455f572d58494249524c7466414d3470614b54494f6b
+                    user:
+                      type: object
+                      properties:
+                        username:
+                          type: string
+                          example: Minea
+                        isVerified:
+                          type: boolean
+                          example: true
+                        email:
+                          type: string
+                          example: m23@gmail.com
+                        creationDate:
+                          type: string
+                          example: 2023-04-28T14:49:12.854Z
+                        status:
+                          type: string
+                          example: ACTIVATED
+      '500':
+        $ref: './components.yml#/components/responses/Error500'
+      '400x1':
+        description: User is banned from the platform
+        content:
+          application/json:
+            schema: 
+              type: object
+              properties:
+                keyword: 
+                  type: string
+                  example: USER_SUSPENDED
+      '400x2':
+        description: Invalid credentials
+        content:
+          application/json:
+            schema: 
+              type: object
+              properties:
+                keyword: 
+                  type: string
+                  example: LOGIN_INVALID_CREDENTIAL
+Logout:
+  post:
+    summary: Logout 
+    tags: 
+      - Auth
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema: 
+            type: object
+            properties:
+              accessToken:
+                type: string
+                example: 65794a68624763694f694a49557a49314e694973496e523563434936496b705856434a392e65794a3163325679535751694f6949324e4452695a474e6c4f474e6a4f544931596d49314e6a4a6d596a426c4e5749694c434a3163325679626d46745a534936496d3170626d56684969776961574630496a6f784e6a67794e6a6b7a4d7a55324c434a6c654841694f6a45324f4449324f5451794e545973496d46315a434936496d356c596e56735953356a623230694c434a7063334d694f694a6863476b746333526e4c6d356c596e56735953356a6232306966512e326c4f697263452d3278674b69687767784f7649337076694a754c67735f6178546e3971734242396b554d
+              refreshToken:
+                type: string
+                example: 65794a68624763694f694a49557a49314e694973496e523563434936496b705856434a392e65794a3163325679535751694f6949324e4452695a474e6c4f474e6a4f544931596d49314e6a4a6d596a426c4e5749694c434a3163325679626d46745a534936496d3170626d56684969776961574630496a6f784e6a67794e6a6b7a4d7a55324c434a6c654841694f6a45324f4449334d4441314e545973496d46315a434936496d356c596e56735953356a623230694c434a7063334d694f694a6863476b746333526e4c6d356c596e56735953356a6232306966512e5075587232634c54307049497971364a496b544c2d455f572d58494249524c7466414d3470614b54494f6b
+            required: 
+              - accessToken
+              - refreshToken
+    responses:
+      '204':
+        summary: Logout is success
+Verify:
+  post:
+    summary: Verify token that was sent to user email
+    tags:
+      - Auth
+    parameters:
+      - in: query
+        name: token
+        schema:
+          type: string
+        description: Token to verify
+        required: true
+    responses:
+      '204':
+        description: Verification success
+      '400x1':
+        description: Token is invalid
+        content:
+          application/json:
+            schema: 
+              type: object
+              properties:
+                keyword: 
+                  type: string
+                  example: VERIFICATION_TOKEN_INVALID
+      '400x2':
+        description: Token is expired
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                keyword:
+                  type: string
+                  example: VERiFICATION_TOKEN_EXPIRED
+      '500':
+        $ref: './components.yml#/components/responses/Error500'
+Revoke:
+  post:
+    summary: Renew access token by using refresh token
+    description: The server will issue new access and refresh token to clients, the old tokens are store in cache to prevent accessibility
+    tags:
+      - Auth
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              accessToken:
+                type: string
+                example: 65794a68624763694f694a49557a49314e694973496e523563434936496b705856434a392e65794a3163325679535751694f6949324e4452695a474e6c4f474e6a4f544931596d49314e6a4a6d596a426c4e5749694c434a3163325679626d46745a534936496d3170626d56684969776961574630496a6f784e6a67794e6a6b7a4d7a55324c434a6c654841694f6a45324f4449324f5451794e545973496d46315a434936496d356c596e56735953356a623230694c434a7063334d694f694a6863476b746333526e4c6d356c596e56735953356a6232306966512e326c4f697263452d3278674b69687767784f7649337076694a754c67735f6178546e3971734242396b554d
+              refreshToken:
+                type: string
+                example: 65794a68624763694f694a49557a49314e694973496e523563434936496b705856434a392e65794a3163325679535751694f6949324e4452695a474e6c4f474e6a4f544931596d49314e6a4a6d596a426c4e5749694c434a3163325679626d46745a534936496d3170626d56684969776961574630496a6f784e6a67794e6a6b7a4d7a55324c434a6c654841694f6a45324f4449334d4441314e545973496d46315a434936496d356c596e56735953356a623230694c434a7063334d694f694a6863476b746333526e4c6d356c596e56735953356a6232306966512e5075587232634c54307049497971364a496b544c2d455f572d58494249524c7466414d3470614b54494f6b
+            example:
+              accessToken: 65794a68624763694f694a49557a49314e694973496e523563434936496b705856434a392e65794a3163325679535751694f6949324e4452695a474e6c4f474e6a4f544931596d49314e6a4a6d596a426c4e5749694c434a3163325679626d46745a534936496d3170626d56684969776961574630496a6f784e6a67794e6a6b7a4d7a55324c434a6c654841694f6a45324f4449324f5451794e545973496d46315a434936496d356c596e56735953356a623230694c434a7063334d694f694a6863476b746333526e4c6d356c596e56735953356a6232306966512e326c4f697263452d3278674b69687767784f7649337076694a754c67735f6178546e3971734242396b554d
+              refreshToken: 65794a68624763694f694a49557a49314e694973496e523563434936496b705856434a392e65794a3163325679535751694f6949324e4452695a474e6c4f474e6a4f544931596d49314e6a4a6d596a426c4e5749694c434a3163325679626d46745a534936496d3170626d56684969776961574630496a6f784e6a67794e6a6b7a4d7a55324c434a6c654841694f6a45324f4449334d4441314e545973496d46315a434936496d356c596e56735953356a623230694c434a7063334d694f694a6863476b746333526e4c6d356c596e56735953356a6232306966512e5075587232634c54307049497971364a496b544c2d455f572d58494249524c7466414d3470614b54494f6b
+    responses:
+      '200':        
+        description: Renew token using refresh token, both access token and refresh token are invalid once renew process is made
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    auth:
+                      type: object
+                      properties:
+                        accessToken: 
+                          type: string
+                          example: 65794a68624763694f694a49557a49314e694973496e523563434936496b705856434a392e65794a3163325679535751694f6949324e4452695a474e6c4f474e6a4f544931596d49314e6a4a6d596a426c4e5749694c434a3163325679626d46745a534936496d3170626d56684969776961574630496a6f784e6a67794e6a6b7a4d7a55324c434a6c654841694f6a45324f4449324f5451794e545973496d46315a434936496d356c596e56735953356a623230694c434a7063334d694f694a6863476b746333526e4c6d356c596e56735953356a6232306966512e326c4f697263452d3278674b69687767784f7649337076694a754c67735f6178546e3971734242396b554d
+                        refreshToken:
+                          type: string
+                          example: 65794a68624763694f694a49557a49314e694973496e523563434936496b705856434a392e65794a3163325679535751694f6949324e4452695a474e6c4f474e6a4f544931596d49314e6a4a6d596a426c4e5749694c434a3163325679626d46745a534936496d3170626d56684969776961574630496a6f784e6a67794e6a6b7a4d7a55324c434a6c654841694f6a45324f4449334d4441314e545973496d46315a434936496d356c596e56735953356a623230694c434a7063334d694f694a6863476b746333526e4c6d356c596e56735953356a6232306966512e5075587232634c54307049497971364a496b544c2d455f572d58494249524c7466414d3470614b54494f6b
+      '401':
+        description: Refresh token is invalid
+      '400':
+        description: Error validation errors
+        content:
+          application/json:
+            schema: 
+              $ref: './components.yml#/components/responses/ErrorValidation'
+      '500':
+        $ref: './components.yml#/components/responses/Error500'

@@ -1,0 +1,5 @@
+node_modules
+.docker
+docker-compose*.yml
+.husky
+.docker

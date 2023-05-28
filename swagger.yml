@@ -1,0 +1,32 @@
+openapi: 3.0.0
+info:
+  title: API documentation
+  description: API documentation for Nebula
+  version: 1.0.0
+  contact:
+    name: Minea
+    email: hc2.minea@gmail.com
+servers:
+  - url: ${STAGING_API_HOST}
+  - url: ${PRODUCTION_API_HOST}
+paths:
+  /users:
+    $ref: './swagger-docs/users.yml#/Users'
+  /login:
+    $ref: './swagger-docs/auth.yml#/Login'
+  /logout:
+    $ref: './swagger-docs/auth.yml#/Logout'
+  /verify:
+    $ref: './swagger-docs/auth.yml#/Verify'
+  /revoke:
+    $ref: './swagger-docs/auth.yml#/Revoke'
+  /users/avatars/me:
+    $ref: './swagger-docs/avatars.yml#/Avatars'
+  /users/password/me:
+    $ref: './swagger-docs/users.yml#/ChangePassword'
+  /users/password/reset/me:
+    $ref: './swagger-docs/users.yml#/ResetPassword'
+  /users/password/reset/verify/me:
+    $ref: './swagger-docs/users.yml#/ConfirmResetPassword'
+components:
+  $ref: 'components.yml#/components'

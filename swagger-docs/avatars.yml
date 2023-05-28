@@ -1,0 +1,113 @@
+Avatars:
+  post:
+    summary: change current user avatar
+    tags: 
+      - Avatar
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            properties:
+              avatarFile:
+                type: string
+                format: binary
+                description: avatar image file
+            required: 
+              - avatarFile
+          encoding:
+            avatarFile:
+              contentType: image/*
+    responses:
+      '200':
+        content:
+          application/json:
+            schema: 
+              type: object
+              properties:
+                data: 
+                  type: object
+                  properties:
+                    profileUrl: 
+                      type: string
+                      example: https://sg.storage.bunnycdn.com/avatars/{userId}/{filename}
+      '401':
+        $ref: './components.yml#/components/responses/Error401'
+      '400':
+        content: 
+          application/json:
+            schema:
+              $ref: './components.yml#/components/responses/ErrorValidation'
+      '500':
+        $ref: './components.yml#/components/responses/Error500'
+  get:
+    summary: get current user avatar
+    tags:
+      - Avatar
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        summary: update avatar success
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    avatars:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          type: 
+                            type: string
+                            summary: file type, can be FILE or GIF
+                            enum:
+                              - FILE
+                              - GIF
+                          filename:
+                            type: string
+                            summary: file name
+                          mimetype: 
+                            type: string
+                            summary: content type of the file
+                          size:
+                            type: number
+                            summary: size of file in bytes
+                          sourceUrl:
+                            type: string
+                            summary: url to file on CDN
+                          _id:
+                            type: string
+                            summary: id of avatar file
+            examples:
+              Users:
+                value:
+                  - type: FILE
+                    filename: btweb_installer.exe
+                    mimetype: "application/x-msdos-program"
+                    size: 1823992
+                    sourceUrl: f4a7330c-bad6-4738-9e6c-fee86d898b15.exe
+                    _id: "6456459dc8cdf14395f129a2"
+                  - type: FILE
+                    filename: WWW.YIFY-TORRENTS.COM.jpg
+                    mimetype: image/jpeg
+                    size: 130677
+                    sourceUrl: 45cda0f5-6449-4805-8fc4-81c1b7501007.jpg
+                    _id: 645645c4a85138a2cee36ad0
+                  - type: FILE
+                    filename: The.Hobbit.The.Desolation.of.Smaug.2013.1080p.BluRay.x264.YIFY.srt
+                    mimetype: application/x-subrip
+                    size: 74842
+                    sourceUrl: 607c285c-253c-4bf2-8a13-eed0329710b3.srt
+                    _id: 6457fef7dac07a30ade8e7e3
+      '401':
+        $ref: './components.yml#/components/responses/Error401'
+      '500':
+        $ref: './components.yml#/components/responses/Error500'

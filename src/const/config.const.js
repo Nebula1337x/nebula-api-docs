@@ -1,0 +1,19 @@
+const {
+  APP_NAME,
+  NODE_ENV,
+  PORT,
+  HOST,
+  API_DOCS_DOMAIN,
+  STAGING_API_HOST,
+  PRODUCTION_API_HOST 
+} = process.env;
+
+module.exports = {
+  APP_NAME,
+  NODE_ENV,
+  PORT,
+  HOST,
+  API_DOCS_DOMAIN,
+  STAGING_API_HOST,
+  PRODUCTION_API_HOST
+};
